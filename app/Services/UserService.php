@@ -66,14 +66,19 @@ class UserService {
         return $relationExist;
     }
 
-    public static function createUserIfNotExist($name, $email, $password){
-        $user = User::where('name', '=', $name)->first();
+    public static function createUserIfNotExist($request){
+        $user = User::where('email', '=', $request['email'])->first();
 
         if($user == null){
             $user = User::create([
-                'name' => $name,
-                'email' => $email,
-                'password' => Hash::make($password),
+                'first_name' => $request['first_name'],
+                'last_name' => $request['last_name'],
+                'email' => $request['email'],
+                'birth_date' => $request['birth_date'],
+                'cpf' => $request['cpf'],
+                'mobile_phone' => $request['mobile_phone'],
+                'userName' => $request['userName'],
+                'password' => Hash::make($request['password']),
             ]);
         }
 

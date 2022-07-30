@@ -7,16 +7,23 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\DepositController;
+use App\Http\Controllers\Bets\LeagueController;
 
 Route::group(['prefix' => 'auth'], function(){
 	Route::post('/register', [AuthController::class, 'register']);
 	Route::post('/login', [AuthController::class, 'login']);
 });
 
+
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['prefix' => 'auth'], function(){
     	Route::post('/logout', [AuthController::class, 'logout']);
     });
+
+    Route::group(['prefix' => 'deposit'], function(){
+		Route::get('/deposit-pix', [DepositController::class, 'teste']);
+	});
 
     Route::group(['prefix' => 'dashboard'], function(){
 		Route::get('/all-data', [DashboardController::class, 'index']);
@@ -50,6 +57,16 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::delete('/{id}', [UserController::class, 'destroy']);
 		Route::delete('/remove-role/{idUser}/{idRole}', [UserController::class, 'removeRole']);
 		Route::delete('/remove-permission/{idUser}/{idPermission}', [UserController::class, 'removePermission']);
+	});
+
+
+	Route::group(['prefix' => 'bets'], function(){
+		Route::group(['prefix' => 'leagues'], function(){
+			Route::get('/list', [LeagueController::class, 'leagues']);
+			Route::get('/matches-by-league/{leagueId}', [LeagueController::class, 'matchsLeague']);
+
+			
+		});
 	});
 
 });

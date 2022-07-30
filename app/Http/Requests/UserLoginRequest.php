@@ -31,17 +31,6 @@ class UserLoginRequest extends FormRequest
         ];
     }
 
-    public function messages(){
-        return [
-            'email.required' => 'O campo "Email" é obrigatório.',
-            'password.required' => 'O campo "Senha" é obrigatório.',
-
-            'name.max' => 'O campo "Nome" pode ter no máximo 255 caracteres.',
-
-            'password.min' => 'O campo "Senha" tem que ter no minimo 8 caracteres.',
-        ];
-    }
-
     protected function failedValidation(Validator $validator) {
         $this->validator = $validator;
     }

@@ -21,9 +21,32 @@ class User extends Authenticatable
     protected $keyType = 'uuid';
     
     protected $fillable = [
-        'name',
+        'id',
+        'first_name',
+        'last_name',
+        'birth_date',
+        'sex',
+        'cpf',
+        'money',
         'email',
+        'mobile_phone',
+        'username',
+        'email_verified_at',
         'password',
+        'currency',
+        'language',
+        'language_label',
+        'address_country',
+        'timezone',
+        'address_zipcode',
+        'address_street',
+        'address_number',
+        'address_neighborhood',
+        'address_complement',
+        'address_city_id',
+        'address_city',
+        'address_state_id',
+        'address_state',
     ];
 
     /**

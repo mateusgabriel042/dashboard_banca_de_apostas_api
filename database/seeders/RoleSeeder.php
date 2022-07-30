@@ -10,7 +10,16 @@ use App\Services\RoleService;
 
 class RoleSeeder extends Seeder {
     public function run() {
-        $user1 = UserService::createUserIfNotExist('Administrador', 'admin@bancodeapostas.com', 'b@mço0fb3T$#');
+        $user1 = UserService::createUserIfNotExist([
+            'first_name' => 'Admin',
+            'last_name' => 'Da Silva',
+            'email' => 'admin@bancodeapostas.com',
+            'birth_date' => '1999-02-04',
+            'cpf' => '000.000.000-00',
+            'mobile_phone' => '(00) 99999 - 9999',
+            'userName' => 'admin.bancodeaposta',
+            'password' => 'b@mço0fb3T$#',
+        ]);
     	
         $role1 = RoleService::createRoleIfNotExist('admin', 'admin');
         $role2 = RoleService::createRoleIfNotExist('manager', 'manager');

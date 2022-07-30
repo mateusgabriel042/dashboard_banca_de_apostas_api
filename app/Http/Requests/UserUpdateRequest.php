@@ -26,8 +26,13 @@ class UserUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|unique:tenant.users,email,'.$this->id,
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'birth_date' => 'required|string',
+            'cpf' => 'required|string|max:14|unique:users,cpf,'.$this->id,
+            'mobile_phone' => 'required|string|unique:users,mobile_phone,'.$this->id,
+            'username' => 'required|string|unique:users,username,'.$this->id,
+            'email' => 'required|string|email|unique:users,email,'.$this->id,
         ];
     }
 
