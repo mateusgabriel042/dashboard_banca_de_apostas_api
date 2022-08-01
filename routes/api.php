@@ -64,8 +64,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::group(['prefix' => 'leagues'], function(){
 			Route::get('/list', [LeagueController::class, 'leagues']);
 			Route::get('/matches-by-league/{leagueId}', [LeagueController::class, 'matchsLeague']);
-
-			
+			Route::get('/matche-odds/{leagueId}/{matcheId}', [LeagueController::class, 'oddsMatche']);
+			Route::get('/matche/{leagueId}/{matcheId}', [LeagueController::class, 'matche']);
 		});
 	});
 

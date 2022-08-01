@@ -47,4 +47,40 @@ class BetService {
         return $listMatchesByLeagueOfCache[$leagueId];
     }
 
+    public function getOddsMatcheInCache($leagueId, $matcheId){
+        $listMatchesByLeagueOfCache = Cache::get('listMatchesByLeague', []);
+
+        if(count($listMatchesByLeagueOfCache) == 0){
+            $listMatchesByLeagueOfCache = $this->betCacheService->addMachesInCache();
+        }
+
+        foreach ($listMatchesByLeagueOfCache[$leagueId]['matchesByDay'] as $key => $matchsByDay) {
+            foreach ($matchsByDay['matches'] as $key => $item) {
+                if($item['match']->id == $matcheId){
+                    return $item;
+                }
+            }
+        }
+
+        return [];
+    }
+
+    public function getMatcheInCache($leagueId, $matcheId){
+        $listMatchesByLeagueOfCache = Cache::get('listMatchesByLeague', []);
+
+        if(count($listMatchesByLeagueOfCache) == 0){
+            $listMatchesByLeagueOfCache = $this->betCacheService->addMachesInCache();
+        }
+
+        foreach ($listMatchesByLeagueOfCache[$leagueId]['matchesByDay'] as $key => $matchsByDay) {
+            foreach ($matchsByDay['matches'] as $key => $item) {
+                if($item['match']->id == $matcheId){
+                    return $item['match'];
+                }
+            }
+        }
+
+        return [];
+    }
+
 }
