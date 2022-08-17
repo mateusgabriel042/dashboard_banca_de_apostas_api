@@ -4,25 +4,64 @@ namespace App\Services;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use GuzzleHttp\Client;
 use App\Services\BetCacheService;
 
 class BetService {
-    private $baseURL = 'https://api.b365api.com/';
-    private $URL_LEAGUES, $URL_ODDS, $URL_NEXT_MATCHES;
-    private $token = '102639-xbQIQN1i29iMtD';
-    private $qtdDaysSearch = 4;
     private $odds = [];
-    private $client;
     private $betCacheService;
 
     public function __construct(BetCacheService $betCacheService){
-        $this->client = new Client();
         $this->betCacheService = $betCacheService;
-        $this->URL_LEAGUES = $this->baseURL.'v1/league';
-        $this->URL_ODDS = $this->baseURL.'v3/bet365/prematch';
-        $this->URL_NEXT_MATCHES = $this->baseURL.'v3/events/upcoming';
     }
+
+    public function getOddsMatchesLiveInCache(){
+        $oddsMatchesInlivesOfCacheTemp = Cache::get('oddsMatchelives', []);
+
+        if(count($oddsMatchesInlivesOfCacheTemp) == 0){
+            return $this->betCacheService->addOddsMatcheLiveInCache();
+        }
+
+        $oddsMatchesInlivesOfCacheFinal = [];
+        foreach ($oddsMatchesInlivesOfCacheTemp as $key => $item) {
+
+            //verificando se a liga ja existe no array 
+            if(in_array($item['matche']->league->name, array_column($oddsMatchesInlivesOfCacheFinal, 'league'))){
+                //caso exista adiciona a partida no array de partidas da liga
+                $arrayIndex = array_search($item['matche']->league->name, array_column($oddsMatchesInlivesOfCacheFinal, 'league'));
+                array_push($oddsMatchesInlivesOfCacheFinal[$arrayIndex]['matches'], $item);
+            }else{
+                //caso nao exista adiciona a liga
+                array_push($oddsMatchesInlivesOfCacheFinal,
+                    [
+                        'league' => $item['matche']->league->name,
+                        'matches' => [
+                            $item
+                        ]
+                    ]
+                );
+            }
+        }
+
+        return $oddsMatchesInlivesOfCacheFinal;
+    }
+
+
+    public function getOddsMatcheLiveInCache($idMatche){
+        $oddsMatchesInlivesOfCache = Cache::get('oddsMatchelives', []);
+
+        if(count($oddsMatchesInlivesOfCache) == 0){
+            return [];
+        }
+
+        foreach ($oddsMatchesInlivesOfCache as $key => $item) {
+            if($item['matche']->id == $idMatche){
+                return $item;
+            }
+        }
+        
+        return [];
+    }
+
 
     public function getLeaguesInCache(){
         

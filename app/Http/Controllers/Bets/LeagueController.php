@@ -28,4 +28,13 @@ class LeagueController extends Controller {
     public function matche($leagueId, $matcheId){
         return $this->betService->getMatcheInCache($leagueId, $matcheId);
     }
+
+    public function lives(){
+        return $this->betService->getOddsMatchesLiveInCache();
+    }
+
+    public function live($matcheId){
+        return $this->betService->getOddsMatcheLiveInCache($matcheId);
+        
+    }
 }

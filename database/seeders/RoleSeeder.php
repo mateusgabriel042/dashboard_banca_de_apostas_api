@@ -40,6 +40,16 @@ class RoleSeeder extends Seeder {
         	10 => ['name' => 'acl-update', 'slug' => 'acl-update'],
         	11 => ['name' => 'acl-delete', 'slug' => 'acl-delete'],
 
+            12 => ['name' => 'country-view', 'slug' => 'country-view'],
+            13 => ['name' => 'country-create', 'slug' => 'country-create'],
+            14 => ['name' => 'country-update', 'slug' => 'country-update'],
+            15 => ['name' => 'country-delete', 'slug' => 'country-delete'],
+
+            16 => ['name' => 'league-view', 'slug' => 'league-view'],
+            17 => ['name' => 'league-create', 'slug' => 'league-create'],
+            18 => ['name' => 'league-update', 'slug' => 'league-update'],
+            19 => ['name' => 'league-delete', 'slug' => 'league-delete'],
+
         ];
 
         foreach ($permissions as $key => $item) {

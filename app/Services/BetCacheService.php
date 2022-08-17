@@ -8,8 +8,8 @@ use GuzzleHttp\Client;
 
 class BetCacheService {
     private $baseURL = 'https://api.b365api.com/';
-    private $URL_LEAGUES, $URL_ODDS, $URL_NEXT_MATCHES;
-    private $token = '102639-xbQIQN1i29iMtD';
+    private $URL_LEAGUES, $URL_ODDS, $URL_NEXT_MATCHES, $URL_MATCHES_LIVE, $URL_ODDS_MATCHES_LIVE;
+    private $token = '131203-hwfqxCU2pvyBjI';
     private $qtdDaysSearch = 4;
     private $odds = [];
     private $client;
@@ -19,6 +19,58 @@ class BetCacheService {
         $this->URL_LEAGUES = $this->baseURL.'v1/league';
         $this->URL_ODDS = $this->baseURL.'v3/bet365/prematch';
         $this->URL_NEXT_MATCHES = $this->baseURL.'v3/events/upcoming';
+        $this->URL_MATCHES_LIVE = $this->baseURL.'v1/bet365/inplay_filter';
+        $this->URL_ODDS_MATCHES_LIVE = $this->baseURL.'v1/bet365/event';
+    }
+
+    public function getMatchesLive(){
+        $params = [
+           'query' => [
+                'token' => $this->token,
+                'sport_id' => 1,
+                'LNG_ID' => 22,
+                'page' => 1,
+           ]
+        ];
+
+        $response = $this->client->request('GET', $this->URL_MATCHES_LIVE, $params);
+
+        $responseBody = json_decode($response->getBody());
+
+        $matches = $responseBody->results;
+
+        return $matches;
+    }
+
+    public function addOddsMatcheLiveInCache(){
+        $listMatchsOddsLive = [];
+
+        $matches = $this->getMatchesLive();
+
+        foreach ($matches as $key => $item) {
+            $params = [
+               'query' => [
+                    'token' => $this->token,
+                    'FI' => $item->id,
+                    'LNG_ID' => 22,
+               ]
+            ];
+
+            $response = $this->client->request('GET', $this->URL_ODDS_MATCHES_LIVE, $params);
+
+            $responseBody = json_decode($response->getBody());
+
+            array_push($listMatchsOddsLive, [
+                'matche' => $item,
+                'odds' => $responseBody->results,
+            ]);
+        }
+
+        Cache::forever('oddsMatchelives', $listMatchsOddsLive);
+
+        $matchesInlivesOfCache = Cache::get('lives', []);
+
+        return $matchesInlivesOfCache;
     }
 
     public function addLeaguesInCache(){
