@@ -18,6 +18,7 @@ return new class extends Migration
             $table->uuid('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->double('value_bet');
+            $table->double('return_bet');
             $table->timestamp('date_purchase')->useCurrent();
             $table->timestamps();
         });

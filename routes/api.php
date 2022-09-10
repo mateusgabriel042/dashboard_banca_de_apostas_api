@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\DepositController;
 use App\Http\Controllers\Admin\LeagueController as LeagueAdminController;
 use App\Http\Controllers\Admin\BetPurchaseController;
 use App\Http\Controllers\Admin\CountryController;
+use App\Http\Controllers\Admin\PayloadController;
 use App\Http\Controllers\Bets\LeagueController;
 
 Route::group(['prefix' => 'auth'], function(){
@@ -22,11 +23,8 @@ Route::group(['prefix' => 'auth'], function(){
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['prefix' => 'auth'], function(){
     	Route::post('/logout', [AuthController::class, 'logout']);
+    	Route::put('/update/{id}', [AuthController::class, 'update']);
     });
-
-    Route::group(['prefix' => 'deposit'], function(){
-		Route::get('/deposit-pix', [DepositController::class, 'teste']);
-	});
 
     Route::group(['prefix' => 'dashboard'], function(){
 		Route::get('/all-data', [DashboardController::class, 'index']);
@@ -94,18 +92,35 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 		Route::delete('/{id}', [BetPurchaseController::class, 'destroy']);
 	});
 
-
-	Route::group(['prefix' => 'bets'], function(){
-		Route::group(['prefix' => 'leagues'], function(){
-			Route::get('/list', [LeagueController::class, 'leagues']);
-			Route::get('/matches-by-league/{leagueId}', [LeagueController::class, 'matchsLeague']);
-			Route::get('/matche-odds/{leagueId}/{matcheId}', [LeagueController::class, 'oddsMatche']);
-			Route::get('/matche/{leagueId}/{matcheId}', [LeagueController::class, 'matche']);
-			Route::get('/lives', [LeagueController::class, 'lives']);
-			Route::get('/live/{matcheId}', [LeagueController::class, 'live']);
-		});
+	Route::group(['prefix' => 'deposit'], function(){
+		Route::get('/', [DepositController::class, 'index']);
+		Route::post('/', [DepositController::class, 'store']);
+		Route::get('/all', [DepositController::class, 'all']);
+		Route::get('/search/{column}/{value}', [DepositController::class, 'search']);
+		Route::put('/{id}', [DepositController::class, 'update']);
+		Route::get('/{id}', [DepositController::class, 'show']);
+		Route::delete('/{id}', [DepositController::class, 'destroy']);
 	});
 
+	Route::group(['prefix' => 'payload'], function(){
+		Route::get('/create-payment/{value}', [PayloadController::class, 'createPayment']);
+	});
 });
+
+Route::group(['prefix' => 'bets'], function(){
+	Route::group(['prefix' => 'leagues'], function(){
+		Route::get('/list', [LeagueController::class, 'leagues']);
+		Route::get('/matches-by-league/{leagueId}', [LeagueController::class, 'matchsLeague']);
+		Route::get('/matche-odds/{leagueId}/{matcheId}', [LeagueController::class, 'oddsMatche']);
+		Route::get('/matche/{leagueId}/{matcheId}', [LeagueController::class, 'matche']);
+		Route::get('/lives', [LeagueController::class, 'lives']);
+		Route::get('/live/{matcheId}', [LeagueController::class, 'live']);
+	});
+});
+
+Route::group(['prefix' => 'payload'], function(){
+	Route::post('/verify-payment', [PayloadController::class, 'verifyPayment']);
+});
+
 
 

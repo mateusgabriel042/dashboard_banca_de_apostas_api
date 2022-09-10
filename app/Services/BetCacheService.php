@@ -5,11 +5,13 @@ namespace App\Services;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use GuzzleHttp\Client;
+use App\Models\Country;
+use App\Models\League;
 
 class BetCacheService {
     private $baseURL = 'https://api.b365api.com/';
     private $URL_LEAGUES, $URL_ODDS, $URL_NEXT_MATCHES, $URL_MATCHES_LIVE, $URL_ODDS_MATCHES_LIVE;
-    private $token = '131203-hwfqxCU2pvyBjI';
+    private $token = '132770-AqxaUAa4OY8EEj';
     private $qtdDaysSearch = 4;
     private $odds = [];
     private $client;
@@ -74,14 +76,23 @@ class BetCacheService {
     }
 
     public function addLeaguesInCache(){
-        $listCountriesSearch = [['br', 'Brasil'], ['eu', 'Europa']];
-        $listLeagues = [
-            0 => ['cc' => 'br', 'country' => 'Brasil', 'leagues' => [],],
-            1 => ['cc' => 'eu', 'country' => 'Europa', 'leagues' => [],],
-            2 => ['cc' => 'us', 'country' => 'Estados unidos', 'leagues' => [],],
-            3 => ['cc' => 'au', 'country' => 'Australia', 'leagues' => [],],
-            4 => ['cc' => null, 'country' => 'Outros', 'leagues' => [],],
-        ];
+        set_time_limit(4000);
+        $countries = Country::all();
+        $listLeagues = [];
+
+        foreach ($countries as $key => $item) {
+            array_push($listLeagues, [
+                'cc' => $item['sigle'],
+                'country' => $item['label'],
+                'leagues' => [],
+            ]);
+        }
+        
+        array_push($listLeagues, [
+            'cc' => null,
+            'country' => 'Outros',
+            'leagues' => [],
+        ]);
 
         foreach ($listLeagues as $key => $item) {
             $params = [
@@ -145,16 +156,22 @@ class BetCacheService {
     public function addMachesInCache(){
     	setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
         date_default_timezone_set('America/Sao_Paulo');
-        set_time_limit(360);
-    	$listLeagues = [
-            0 => ['cc' => 'br', 'country' => 'Brasil', 'leagues' => [451, 155, 328],],//teste {copa do brasil, serie A, serie B}
-        ];
+        set_time_limit(4000);
 
-        $listMatchesByLeague = [
-        	451 => ['league' => 451, 'matchesByDay' => []],
-        	155 => ['league' => 155, 'matchesByDay' => []],
-        	328 => ['league' => 328, 'matchesByDay' => []],
-        ];
+        $countries = Country::where('is_active', '=', true)->get();
+
+        foreach ($countries as $key => $country) {
+            $leagues = League::where('country_id', '=', $country->id)
+                             ->where('is_active', '=', true)
+                             ->get();
+            foreach ($leagues as $key => $league) {
+                $listMatchesByLeague[$league->league_id] = [
+                    'league' => $league->league_id,
+                    'matchesByDay' => [],
+                ];
+            }
+        }
+        
         $matchesByDay = [];
 
         foreach ($listMatchesByLeague as $keyMatcheByLeague => $itemMacthByLeague) {

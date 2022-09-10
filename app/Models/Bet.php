@@ -20,6 +20,7 @@ class Bet extends Model
         'id',
         'bet_purchase_id',
         'bet',
+        'bet_id',
         'result_final',
         'type_bet',
         'id_matche',

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use App\Services\RoleService;
 use App\Services\PermissionService;
 use App\Traits\CheckAccess;
+use Carbon\Carbon;
 
 class UserService {
     use CheckAccess;
@@ -33,7 +34,7 @@ class UserService {
 
     public function getAll(){
         $this->checkAccess('user-view');
-        return User::with(['role', 'permissions'])->paginate(20);
+        return User::with(['deposits', 'betPurchase', 'role', 'permissions'])->paginate(20);
     }
 
     public function getAllNotPaginate(){
@@ -86,19 +87,21 @@ class UserService {
     }
 
     public function find($id){
-        return User::with(['role', 'permissions'])->findOrFail($id);
+        return User::with(['deposits', 'betPurchase', 'role', 'permissions'])->findOrFail($id);
     }
 
     public function search($option, $value) {
         $this->checkAccess('user-view');
-        $users = User::with(['role', 'permissions'])->where($option,'LIKE',"%{$value}%")->paginate(20);
+        $users = User::with(['deposits', 'betPurchase', 'role', 'permissions'])->where($option,'LIKE',"%{$value}%")->paginate(20);
         return $users;
     }
 
     public function update(UserUpdateRequest $request, $id){
+        
         $this->checkAccess('user-update');
-        $user = User::findOrFail($id);
-        $dataUser = $request->except('role_id', 'permissions');
+        $user = User::find($id);
+        $dataUser = $request->except('role_id', 'permissions', 'money');
+        $dataUser['birth_date'] = Carbon::createFromFormat('d/m/Y', $dataUser['birth_date'])->format('Y-m-d');
         if(isset($dataUser['password']) != null){
             $dataUser['password'] = Hash::make($dataUser['password']);
         }

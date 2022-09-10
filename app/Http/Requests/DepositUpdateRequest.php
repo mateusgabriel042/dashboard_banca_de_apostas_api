@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use \Illuminate\Contracts\Validation\Validator;
 
-class LeagueUpdateRequest extends FormRequest
+class DepositUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,11 +25,9 @@ class LeagueUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string',
-            'label' => 'required|string',
-            'league_id' => 'required',
-            'country_id' => 'required',
-            'sport_id' => 'required',
+            'transaction_amount' => 'required',
+            'status' => 'required|string',
+            'user_id' => 'required|string',
         ];
     }
 

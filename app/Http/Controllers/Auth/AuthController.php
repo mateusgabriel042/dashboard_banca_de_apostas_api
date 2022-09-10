@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Http\Requests\UserRegisterRequest;
 use App\Http\Requests\UserLoginRequest;
+use App\Http\Requests\UserUpdateRequest;
 use App\Services\UserService;
+use Carbon\Carbon;
 
 class AuthController extends Controller {
 	use ApiResponser;
@@ -28,12 +30,28 @@ class AuthController extends Controller {
             ]);
         }
 
-    	$dataUser = $request->all();
+    	$dataUser = $request->except('money');
+        $dataUser['birth_date'] = Carbon::createFromFormat('d/m/Y', $dataUser['birth_date'])->format('Y-m-d');
     	$dataUser['password'] = Hash::make($dataUser['password']);
         $user = User::create($dataUser);
 
         return $this->success([
         	'user' => $user,
+            'token' => $user->createToken('API Token')->plainTextToken
+        ]);
+    }
+
+    public function update(UserUpdateRequest $request, $id){
+        $user = User::find($id);
+        $dataUser = $request->except('role_id', 'permissions', 'money');
+        $dataUser['birth_date'] = Carbon::createFromFormat('d/m/Y', $dataUser['birth_date'])->format('Y-m-d');
+        if(isset($dataUser['password']) != null){
+            $dataUser['password'] = Hash::make($dataUser['password']);
+        }
+        $user->update($dataUser);
+
+        return $this->success([
+            'user' => $user,
             'token' => $user->createToken('API Token')->plainTextToken
         ]);
     }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\HasRolesAndPermissions;
 use App\Traits\Uuid;
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -11,6 +12,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Permission;
 use App\Models\Role;
+use App\Models\Deposit;
+use App\Models\BetPurchase;
 
 class User extends Authenticatable
 {
@@ -68,6 +71,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    protected function getBirthDateAttribute($value){
+        return Carbon::createFromFormat('Y-m-d', $value)->format('d/m/Y');
+    }
+
     public function role(){
         return $this->belongsToMany(Role::class, 'users_roles')->with('permissions');
     }
@@ -90,5 +97,13 @@ class User extends Authenticatable
         }
 
         return $this->role->contains('name', $roles);
+    }
+
+    public function deposits() {
+        return $this->hasMany(Deposit::class, 'user_id');
+    }
+
+    public function betPurchase() {
+        return $this->hasMany(BetPurchase::class, 'user_id');
     }
 }

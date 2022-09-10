@@ -29,6 +29,7 @@ class LeagueRegisterRequest extends FormRequest
             'label' => 'required|string',
             'league_id' => 'required',
             'country_id' => 'required',
+            'sport_id' => 'required',
         ];
     }
 

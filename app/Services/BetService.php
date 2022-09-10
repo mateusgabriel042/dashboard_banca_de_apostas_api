@@ -5,13 +5,15 @@ namespace App\Services;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use App\Services\BetCacheService;
+use App\Models\Country;
+use App\Models\League;
 
 class BetService {
     private $odds = [];
     private $betCacheService;
 
-    public function __construct(BetCacheService $betCacheService){
-        $this->betCacheService = $betCacheService;
+    public function __construct(){
+        $this->betCacheService = new BetCacheService();
     }
 
     public function getOddsMatchesLiveInCache(){
@@ -64,19 +66,40 @@ class BetService {
 
 
     public function getLeaguesInCache(){
-        
         $listLeaguesOfCache = Cache::get('leagues', []);
 
         if(count($listLeaguesOfCache) == 0){
         	return $this->betCacheService->addLeaguesInCache();
         }
+        $finalListResults = [];
 
-        return $listLeaguesOfCache;   
+        $countries = Country::where('is_active', '=', true)->get();
+
+        foreach ($listLeaguesOfCache as $key => $item) {
+            if($countries->contains('sigle', $item['cc'])){
+                $country = Country::where('sigle', '=', $item['cc'])->first();
+                $leaguesActive = League::where('country_id', '=', $country->id)
+                             ->where('is_active', '=', true)
+                             ->get();
+
+                $leaguesFinal = [];
+                foreach ($item['leagues'] as $key => $league) {
+                    if($leaguesActive->contains('league_id', $league->id)){
+                        array_push($leaguesFinal, $league);
+                    }
+                }
+                $item['leagues'] = $leaguesFinal;
+                array_push($finalListResults, $item);
+
+            }
+        }
+        
+
+        return $finalListResults;   
     }
 
 
     public function getMachesInCache($leagueId){
-        
         $listMatchesByLeagueOfCache = Cache::get('listMatchesByLeague', []);
 
         if(count($listMatchesByLeagueOfCache) == 0){
@@ -85,6 +108,7 @@ class BetService {
 
         return $listMatchesByLeagueOfCache[$leagueId];
     }
+
 
     public function getOddsMatcheInCache($leagueId, $matcheId){
         $listMatchesByLeagueOfCache = Cache::get('listMatchesByLeague', []);

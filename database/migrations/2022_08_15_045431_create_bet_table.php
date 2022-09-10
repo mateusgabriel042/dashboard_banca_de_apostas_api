@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('result_final', 70)->nullable();
             $table->string('type_bet', 70);
             $table->string('id_matche', 25);
+            $table->string('bet_id', 150)->nullable();
             $table->boolean('win')->default(0);
             $table->timestamps();
         });

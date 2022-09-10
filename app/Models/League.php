@@ -24,6 +24,7 @@ class League extends Model
         'is_active',
         'league_id',
         'country_id',
+        'sport_id',
     ];
 
     public function country() {

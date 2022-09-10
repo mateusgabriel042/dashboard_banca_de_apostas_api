@@ -19,7 +19,7 @@ class BetPurchaseController extends Controller
     private $endpointService;
     private $role = 'bet-purchase';
     private $endpointName = 'Aposta(s) adquirida(s)';
-    private $relations = [];
+    private $relations = ['user', 'bets'];
 
     public function __construct(){
         $this->endpointService = new EndpointService($this->role, new ModelEndpoint());
