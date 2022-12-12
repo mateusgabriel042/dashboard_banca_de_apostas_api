@@ -7,6 +7,7 @@ use \Illuminate\Contracts\Validation\Validator;
 
 class BetPurchaseUpdateRequest extends FormRequest
 {
+    public $validator = null;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -25,8 +26,7 @@ class BetPurchaseUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => 'required',
-            'value_bet' => 'required',
+            'invested_money' => 'required',
         ];
     }
 

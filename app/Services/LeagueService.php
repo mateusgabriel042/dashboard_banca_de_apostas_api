@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use Illuminate\Http\Request;
+use App\Models\Country;
+use App\Models\League;
 
 class LeagueService extends AbstractService {
     private $role;
@@ -15,7 +17,30 @@ class LeagueService extends AbstractService {
     }
 
     public function getByCountry($countryId){
-    	return $this->model->where('country_id', '=', $countryId)->get();
+        $leagues = League::where('country_id', '=', $countryId)->get();
+        if($leagues != null)
+            return $leagues;
+        else
+            return [];
+    }
+
+    public function allCountryLeagues(){
+        return Country::with(['leagues'])->where('is_active', '=', 1)->get();
+    }
+
+    public function allLeagueMatches($apieventsSportId, $apieventsLeagueId){
+        $league = $this->model->with(['country', 'matches'])->where('is_active', '=', 1)
+                                                                 ->where('apievents_sport_id', '=', $apieventsSportId)
+                                                                 ->where('apievents_league_id', '=', $apieventsLeagueId)
+                                                                 ->first();
+        
+        foreach ($league->matches as $keyMatche => $matche) {
+            if($matche['object_odds_prematche'] != null){
+                $league->matches[$keyMatche]['object_odds_prematche'] = json_decode($matche['object_odds_prematche']);
+            }   
+        }
+
+        return $league;
     }
 
     public function updateActiveLeagues($request){

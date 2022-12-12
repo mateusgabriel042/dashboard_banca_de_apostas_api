@@ -83,24 +83,6 @@ class LeagueController extends Controller
         ],  'Listagem de '.$this->endpointName.' realizada com sucesso!');
     }
 
-    public function store(EndpointRegisterRequest $request) {
-        if (isset($request->validator) && $request->validator->fails()) {
-            return $this->error('Erro ao cadastrar o '.$endpointName, 422, [
-                'errors' => $request->validator->messages(),
-            ]);
-        }
-
-        try {
-            $item = $this->endpointService->create($request);
-        } catch (\Exception $e) {
-            return $this->error($e->getMessage(), $e->getCode());
-        }
-
-        return $this->success([
-            'item' => new EndpointResource($item),
-        ],  $this->endpointName.' cadastrada com sucesso!');
-    }
-
     public function show($id) {
         try {
             $item = $this->endpointService->find($id, $this->relations);
@@ -123,17 +105,5 @@ class LeagueController extends Controller
         return $this->success([
             'item' => new EndpointResource($item),
         ],  $this->endpointName.' atualizada(o) com sucesso!');
-    }
-
-    public function destroy($id) {
-        try {
-            $item = $this->endpointService->delete($id);
-        } catch (\Exception $e) {
-            return $this->error($e->getMessage(), $e->getCode());
-        }
-
-        return $this->success([
-            'item' => new EndpointResource($item),
-        ]);
     }
 }

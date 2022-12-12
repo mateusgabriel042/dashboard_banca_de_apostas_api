@@ -3,11 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use \Illuminate\Contracts\Validation\Validator;
 
-class CountryUpdateRequest extends FormRequest
+class SportUpdateRequest extends FormRequest
 {
-    public $validator = null;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -15,7 +13,7 @@ class CountryUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -26,13 +24,7 @@ class CountryUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string',
-            'label' => 'required|string',
-            'code' => 'required|string|max:6',
+            //
         ];
-    }
-
-    protected function failedValidation(Validator $validator) {
-        $this->validator = $validator;
     }
 }

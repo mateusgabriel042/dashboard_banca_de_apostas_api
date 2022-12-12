@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Bets;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -61,7 +61,7 @@ class BetPurchaseController extends Controller
 
     public function store(EndpointRegisterRequest $request) {
         if (isset($request->validator) && $request->validator->fails()) {
-            return $this->error('Erro ao cadastrar o '.$endpointName, 422, [
+            return $this->error('Erro ao cadastrar o '.$this->endpointName, 422, [
                 'errors' => $request->validator->messages(),
             ]);
         }

@@ -60,6 +60,18 @@ class RoleSeeder extends Seeder {
             26 => ['name' => 'bet-purchase-update', 'slug' => 'bet-purchase-update'],
             27 => ['name' => 'bet-purchase-delete', 'slug' => 'bet-purchase-delete'],
 
+            28 => ['name' => 'sport-view', 'slug' => 'sport-view'],
+            29 => ['name' => 'sport-create', 'slug' => 'sport-create'],
+            30 => ['name' => 'sport-update', 'slug' => 'sport-update'],
+            31 => ['name' => 'sport-delete', 'slug' => 'sport-delete'],
+
+            32 => ['name' => 'odd-view', 'slug' => 'odd-view'],
+            33 => ['name' => 'odd-create', 'slug' => 'odd-create'],
+            34 => ['name' => 'odd-update', 'slug' => 'odd-update'],
+            35 => ['name' => 'odd-delete', 'slug' => 'odd-delete'],
+
+            
+
         ];
 
         foreach ($permissions as $key => $item) {

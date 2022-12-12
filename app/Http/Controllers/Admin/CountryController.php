@@ -19,7 +19,7 @@ class CountryController extends Controller
     private $endpointService;
     private $role = 'country';
     private $endpointName = 'país(es)';
-    private $relations = ['leagues'];
+    private $relations = [];
 
     public function __construct(){
         $this->endpointService = new EndpointService($this->role, new ModelEndpoint());

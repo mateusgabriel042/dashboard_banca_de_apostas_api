@@ -21,10 +21,12 @@ class BetPurchase extends Model
 
     protected $fillable = [
         'id',
-        'value_bet',
-        'date_purchase',
-        'return_bet',
         'user_id',
+        'invested_money',
+        'return_money',
+        'is_active',
+        'win',
+        'date_purchase',
     ];
 
     protected function getDatePurchaseAttribute($value){

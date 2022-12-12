@@ -7,6 +7,7 @@ use \Illuminate\Contracts\Validation\Validator;
 
 class LeagueUpdateRequest extends FormRequest
 {
+    public $validator = null;
     /**
      * Determine if the user is authorized to make this request.
      *

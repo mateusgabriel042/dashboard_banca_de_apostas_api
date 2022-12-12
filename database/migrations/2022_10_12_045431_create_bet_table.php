@@ -15,14 +15,20 @@ return new class extends Migration
     {
         Schema::create('bet', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->enum('type_event', ['prematche', 'live']);
+            $table->string('type_bet', 70);
+            $table->string('subtype_bet', 70);
+            $table->string('customer_bet', 220);
+            $table->string('bet_result_finish', 220)->nullable();
+            $table->biginteger('apievents_sport_id');
+            $table->biginteger('apievents_league_id');
+            $table->biginteger('bet365_matche_id');
+            $table->biginteger('odd_id');
+            $table->double('odd');
+            $table->boolean('is_active')->default(1);
+            $table->boolean('win')->nullable();
             $table->uuid('bet_purchase_id');
             $table->foreign('bet_purchase_id')->references('id')->on('bets_purchase')->onDelete('cascade');
-            $table->string('bet', 70);
-            $table->string('result_final', 70)->nullable();
-            $table->string('type_bet', 70);
-            $table->string('id_matche', 25);
-            $table->string('bet_id', 150)->nullable();
-            $table->boolean('win')->default(0);
             $table->timestamps();
         });
     }

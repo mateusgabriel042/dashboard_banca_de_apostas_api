@@ -8,11 +8,22 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\DepositController;
+use App\Http\Controllers\Admin\SportController as SportAdminController;
 use App\Http\Controllers\Admin\LeagueController as LeagueAdminController;
-use App\Http\Controllers\Admin\BetPurchaseController;
 use App\Http\Controllers\Admin\CountryController;
 use App\Http\Controllers\Admin\PayloadController;
+
+
+use App\Http\Controllers\Bets\BetPurchaseController;
 use App\Http\Controllers\Bets\LeagueController;
+use App\Http\Controllers\Bets\MatcheController;
+
+use App\Http\Controllers\Sports\LeagueController as SportsLeagueController;
+use App\Http\Controllers\Sports\CountryController as SportsCountryController;
+use App\Http\Controllers\Sports\MatcheController as SportsMatcheController;
+use App\Http\Controllers\Sports\OddPrematcheController as SportsOddPrematcheController;
+use App\Http\Controllers\Sports\ResultController as SportsResultController;
+
 
 Route::group(['prefix' => 'auth'], function(){
 	Route::post('/register', [AuthController::class, 'register']);
@@ -72,14 +83,16 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 	Route::group(['prefix' => 'league'], function(){
 		Route::get('/', [LeagueAdminController::class, 'index']);
-		Route::post('/', [LeagueAdminController::class, 'store']);
 		Route::get('/all', [LeagueAdminController::class, 'all']);
 		Route::get('/by-country/{countryId}', [LeagueAdminController::class, 'byCountry']);
 		Route::get('/search/{column}/{value}', [LeagueAdminController::class, 'search']);
 		Route::put('/{id}', [LeagueAdminController::class, 'update']);
 		Route::post('/update-active-leagues', [LeagueAdminController::class, 'updateActiveLeagues']);
 		Route::get('/{id}', [LeagueAdminController::class, 'show']);
-		Route::delete('/{id}', [LeagueAdminController::class, 'destroy']);
+	});
+
+	Route::group(['prefix' => 'sport'], function(){
+		Route::get('/', [SportAdminController::class, 'index']);
 	});
 
 	Route::group(['prefix' => 'bet-purchase'], function(){
@@ -105,16 +118,25 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 	Route::group(['prefix' => 'payload'], function(){
 		Route::get('/create-payment/{value}', [PayloadController::class, 'createPayment']);
 	});
+
+	Route::group(['prefix' => 'sports'], function(){
+		Route::get('/leagues-by-country/{codeCountry}/{sportName}', [SportsLeagueController::class, 'getLeaguesByCountryOfAPIOut']);
+		Route::post('/register-matches', [SportsMatcheController::class, 'registerMatches']);
+		Route::post('/register-odds', [SportsOddPrematcheController::class, 'registerOdds']);
+		
+		Route::post('/register-results-soccer', [SportsResultController::class, 'registerResultsSoccer']);
+
+	});
 });
 
 Route::group(['prefix' => 'bets'], function(){
 	Route::group(['prefix' => 'leagues'], function(){
-		Route::get('/list', [LeagueController::class, 'leagues']);
-		Route::get('/matches-by-league/{leagueId}', [LeagueController::class, 'matchsLeague']);
-		Route::get('/matche-odds/{leagueId}/{matcheId}', [LeagueController::class, 'oddsMatche']);
-		Route::get('/matche/{leagueId}/{matcheId}', [LeagueController::class, 'matche']);
-		Route::get('/lives', [LeagueController::class, 'lives']);
-		Route::get('/live/{matcheId}', [LeagueController::class, 'live']);
+		Route::get('/all-country-leagues', [LeagueController::class, 'allCountryLeagues']);
+		Route::get('/all-league-matches/{apieventsSportId}/{apieventsLeagueId}', [LeagueController::class, 'allLeagueMatches']);
+	});
+
+	Route::group(['prefix' => 'matches'], function(){
+		Route::get('/matche-odds/{apieventsSportId}/{apieventsLeagueId}/{bet365MatcheId}', [MatcheController::class, 'matcheOdds']);
 	});
 });
 

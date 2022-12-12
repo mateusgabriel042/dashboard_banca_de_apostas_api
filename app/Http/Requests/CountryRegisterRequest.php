@@ -7,6 +7,7 @@ use \Illuminate\Contracts\Validation\Validator;
 
 class CountryRegisterRequest extends FormRequest
 {
+    public $validator = null;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -26,7 +27,8 @@ class CountryRegisterRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'sigle' => 'required|string|max:4',
+            'label' => 'required|string',
+            'code' => 'required|string|max:6',
         ];
     }
 

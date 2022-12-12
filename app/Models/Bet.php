@@ -18,12 +18,20 @@ class Bet extends Model
 
     protected $fillable = [
         'id',
-        'bet_purchase_id',
-        'bet',
-        'bet_id',
-        'result_final',
+        'type_event',
         'type_bet',
-        'id_matche',
+        'subtype_bet',
+        'customer_bet',
+        'bet_result_finish',
+        'apievents_sport_id',
+        'apievents_league_id',
+        'bet365_matche_id',
+        'odd_id',
+        'odd',
+        'is_active',
         'win',
+        'bet_purchase_id',
     ];
+
+    
 }

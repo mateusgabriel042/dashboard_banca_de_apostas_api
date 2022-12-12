@@ -13,15 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('leagues', function (Blueprint $table) {
+        Schema::create('sports', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name', 200);
+            $table->bigInteger('apievents_id');
+            $table->string('name', 150);
             $table->string('label', 200)->nullable();
             $table->boolean('is_active')->default(0);
-            $table->bigInteger('league_id');//api de eventos
-            $table->uuid('country_id');
-            $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -32,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('leagues');
+        Schema::dropIfExists('sports');
     }
 };

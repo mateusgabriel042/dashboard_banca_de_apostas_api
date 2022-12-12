@@ -15,11 +15,13 @@ return new class extends Migration
     {
         Schema::create('countries', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name', 200);
-            $table->string('sigle', 4);
+            $table->string('name', 150);
             $table->string('label', 200)->nullable();
+            $table->string('code', 5)->nullable();
+            $table->string('flag', 250)->nullable();
             $table->boolean('is_active')->default(0);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
